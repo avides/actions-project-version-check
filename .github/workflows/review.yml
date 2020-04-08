@@ -24,21 +24,3 @@ jobs:
         run: |
           npm install
           npm test
-
-      - name: setup-sonar
-        uses: warchant/setup-sonar-scanner@v1
- 
-      - name: sonar
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          export SONAR_ORGANIZATION=$(echo ${GITHUB_REPOSITORY} | cut -d / -f 1)
-          echo ${GITHUB_REF}
-          export GITHUB_PULL_REQUEST=$(cut -d / -f 3 <(echo ${GITHUB_REF}))
-          sonar-scanner \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
-            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
-            -Dsonar.organization=${SONAR_ORGANIZATION} \
-            -Dsonar.projectKey=${GITHUB_REPOSITORY//\//_} \
-            -Dsonar.pullrequest.key=${GITHUB_PULL_REQUEST} \
-            -Dsonar.pullrequest.branch=${GITHUB_REF}
