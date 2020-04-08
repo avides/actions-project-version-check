@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aivdes/actions-project-version-check.git"
+    "url": "git+https://github.com/avides/actions-project-version-check.git"
   },
   "keywords": [
     "GitHub",
@@ -20,9 +20,9 @@
   "author": "Henrik Adamski",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/aivdes/actions-project-version-check/issues"
+    "url": "https://github.com/avides/actions-project-version-check/issues"
   },
-  "homepage": "https://github.com/aivdes/actions-project-version-check#readme",
+  "homepage": "https://github.com/avides/actions-project-version-check#readme",
   "dependencies": {
     "@actions/core": "^1.2.3",
     "@actions/github": "^2.1.1",

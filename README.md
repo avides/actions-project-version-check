@@ -12,7 +12,7 @@ Currently supported are `pom.xml`, `package.json` and `version.txt`.
 
 ### `file-to-check`
 
-**Required** Filename (with path) that must contain the project version update (examples: pom.xml, package.json, version.txt)
+**Required** Filename (with path) that must contain the project version update (examples: pom.xml, package.json or version.txt)
 
 ### `additional-files-to-check`
 
