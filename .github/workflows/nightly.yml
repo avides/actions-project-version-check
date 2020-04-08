@@ -1,0 +1,33 @@
+name: nightly
+ 
+on:
+  schedule:
+    - cron: 0 0 * * *
+ 
+jobs:
+  nightly:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+ 
+    steps:
+      - name: checkout
+        uses: actions/checkout@v1
+ 
+      - name: test
+        run: |
+          npm install
+          npm test
+ 
+      - name: setup-sonar
+        uses: warchant/setup-sonar-scanner@v1
+ 
+      - name: sonar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          export SONAR_ORGANIZATION=$(echo ${GITHUB_REPOSITORY} | cut -d / -f 1)
+          sonar-scanner \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+            -Dsonar.organization=${SONAR_ORGANIZATION} \
+            -Dsonar.projectKey=${GITHUB_REPOSITORY//\//_}

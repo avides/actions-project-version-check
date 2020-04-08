@@ -1,0 +1,43 @@
+name: review
+ 
+on:
+  pull_request:
+    types: [opened, synchronize]
+ 
+jobs:
+  review:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+ 
+    steps:
+      - name: checkout 
+        uses: actions/checkout@v1
+ 
+      - name: project-version-check (integration-test)
+        uses: ./
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          file-to-check: package.json
+          additional-files-to-check: README.md
+
+      - name: test
+        run: |
+          npm install
+          npm test
+
+      - name: setup-sonar
+        uses: warchant/setup-sonar-scanner@v1
+ 
+      - name: sonar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          export SONAR_ORGANIZATION=$(echo ${GITHUB_REPOSITORY} | cut -d / -f 1)
+          export GITHUB_PULL_REQUEST=$(cut -d / -f 3 <(echo ${GITHUB_REF}))
+          sonar-scanner \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+            -Dsonar.organization=${SONAR_ORGANIZATION} \
+            -Dsonar.projectKey=${GITHUB_REPOSITORY//\//_} \
+            -Dsonar.pullrequest.key=${GITHUB_PULL_REQUEST} \
+            -Dsonar.pullrequest.branch=${GITHUB_REF}

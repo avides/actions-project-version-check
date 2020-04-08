@@ -1,0 +1,107 @@
+const Index = require('./index');
+const core = require('@actions/core');
+const fs = require('fs');
+
+beforeEach(() => 
+{
+    // setup mock
+    jest.mock('@actions/core');
+    jest.spyOn(core, 'setFailed');
+    jest.mock('fs');
+    jest.spyOn(fs, 'readFileSync');
+});
+
+afterEach(() => 
+{
+    jest.clearAllMocks();
+});
+
+test('testGetProjectVersionFromMavenFile', async() => 
+{
+    var result = Index.getProjectVersionFromMavenFile('<project><version>1.0.0</version></project>');
+    expect(result).toBe('1.0.0');
+});
+
+test('testGetProjectVersionFromPackageJsonFile', async() => 
+{
+    var result = Index.getProjectVersionFromPackageJsonFile('{"version":"1.0.0"}');
+    expect(result).toBe('1.0.0');
+});
+
+test('testGetProjectVersionWithMavenFile', async() => 
+{
+    var result = Index.getProjectVersion('<project><version>1.0.0</version></project>', 'xml');
+    expect(result).toBe('1.0.0');
+});
+
+test('testGetProjectVersionWithPackageJsonFile', async() => 
+{
+    var result = Index.getProjectVersion('{"version":"1.0.0"}', 'json');
+    expect(result).toBe('1.0.0');
+});
+
+test('testGetProjectVersionWithTxtFile', async() => 
+{
+    var result = Index.getProjectVersion('1.0.0', 'txt');
+    expect(result).toBe('1.0.0');
+});
+
+test('testGetProjectVersionWithUnsupportedFile', async() => 
+{
+    var result = Index.getProjectVersion('1.0.0', 'md');
+    expect(result).toBe(undefined);
+});
+
+it('testCheckVersionUpdateWithVersionsAreEqual', async() => 
+{
+    // action
+    Index.checkVersionUpdate('1.0.0', '1.0.0', undefined);
+
+    // verify
+    expect(core.setFailed).toHaveBeenCalledWith('You have to update the project version!');
+});
+
+it('testCheckVersionUpdateWithVersionIsDowngraded', async() => 
+{
+    // action
+    Index.checkVersionUpdate('1.0.0', '0.9.0', undefined);
+
+    // verify
+    expect(core.setFailed).toHaveBeenCalledWith('You have to update the project version!');
+});
+
+it('testCheckVersionUpdateWithVersionIsUpdated', async() => 
+{
+    // action
+    Index.checkVersionUpdate('1.0.0', '1.1.0', undefined);
+
+    // verify
+    expect(core.setFailed).not.toHaveBeenCalledWith('You have to update the project version!');
+});
+
+it('testCheckVersionUpdateWithVersionIsUpdatedAndAdditionalFilesGivenButNotUpdated', async() => 
+{
+    // prepare
+    fs.readFileSync.mockReturnValue('foo... version: 1.0.0 ...bar');
+
+    // action
+    Index.checkVersionUpdate('1.0.0', '1.1.0', ['README.md']);
+
+    // verify
+    expect(fs.readFileSync).toHaveBeenCalledWith('undefined/README.md');
+    expect(core.setFailed).toHaveBeenCalledWith('You have to update the project version in "README.md"!');
+});
+
+it('testCheckVersionUpdateWithVersionIsUpdatedAndAdditionalFilesGiven', async() => 
+{
+    console.log(process.env.GITHUB_WORKSPACE);
+    // prepare
+    fs.readFileSync.mockReturnValue('foo... version: 1.1.0 ...bar');
+
+    // action
+    Index.checkVersionUpdate('1.0.0', '1.1.0', ['README.md']);
+
+    // verify
+    expect(fs.readFileSync).toHaveBeenCalledWith('undefined/README.md');
+    expect(core.setFailed).not.toHaveBeenCalledWith('You have to update the project version in "README.md"!');
+});
