@@ -15,4 +15,4 @@ outputs:
     description: If the version update is valid then the new version is returned
 runs:
   using: 'node12'
-  main: 'index.js'
+  main: 'dist/index.js'
