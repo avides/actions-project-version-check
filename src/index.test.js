@@ -105,3 +105,18 @@ it('testCheckVersionUpdateWithVersionIsUpdatedAndAdditionalFilesGiven', async() 
     expect(fs.readFileSync).toHaveBeenCalledWith('test/workspace/README.md');
     expect(core.setFailed).not.toHaveBeenCalledWith('You have to update the project version in "README.md"!');
 });
+
+it('testCheckVersionUpdateWithVersionIsUpdatedAndAdditionalFilesGivenWithSpaceInString', async() => 
+{
+    console.log(process.env.GITHUB_WORKSPACE);
+    // prepare
+    fs.readFileSync.mockReturnValue('foo... version: 1.1.0 ...bar');
+
+    // action
+    Index.checkVersionUpdate('1.0.0', '1.1.0', [' README.md']);
+
+    // verify
+    expect(fs.readFileSync).toHaveBeenCalledWith('test/workspace/README.md');
+    expect(core.setFailed).not.toHaveBeenCalledWith('You have to update the project version in "README.md"!');
+});
+

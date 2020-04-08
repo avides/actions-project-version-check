@@ -62,7 +62,7 @@ function checkVersionUpdate(targetVersion, branchVersion, additionalFilesToCheck
     {
         additionalFilesToCheck.forEach(file => 
         {
-            var fileContent = fs.readFileSync(repositoryLocalWorkspace + file);
+            var fileContent = fs.readFileSync(repositoryLocalWorkspace + file.trim());
             
             if (!fileContent.includes(branchVersion) || fileContent.includes(targetVersion))
             {
@@ -91,7 +91,7 @@ async function run()
 
         // get additional files with updated project version
         var additionalFilesToCheck = core.getInput('additional-files-to-check');
-        additionalFilesToCheck = core.getInput('additional-files-to-check') != '' ? core.getInput('additional-files-to-check') : undefined;
+        additionalFilesToCheck = additionalFilesToCheck != '' ? additionalFilesToCheck : undefined;
         if (additionalFilesToCheck != undefined)
         {
             additionalFilesToCheck = additionalFilesToCheck.split(',');

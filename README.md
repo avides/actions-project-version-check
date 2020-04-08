@@ -1,6 +1,6 @@
 # actions-project-version-check
 
-This action checks if the project version has been updated in your pull request. The action will request the file content from file with name of `file-to-check` from the pull request target branch and parse the project version. After that the local project version will be checked against the targets one with [semver-diff](https://www.npmjs.com/package/semver-diff). If the result is `undefined`, the action fail.
+This action checks if the project version has been updated in your pull request. The action will request the file content (from file with name from envrionment variable `file-to-check`) from the pull request target branch and parse the project version. After that the local project version will be checked against the targets one with [semver-diff](https://www.npmjs.com/package/semver-diff). If the result is `undefined`, the action fail.
 
 Currently supported are `pom.xml`, `package.json` and `version.txt`.
 
@@ -8,7 +8,7 @@ Currently supported are `pom.xml`, `package.json` and `version.txt`.
 
 ### `token`
 
-**Required** The repository token is used to request the target branch `file-to-check`-file from the [GitHub API](https://developer.github.com/v3/repos/contents/#get-contents).
+**Required** The repository token is used to request the target branch `file-to-check`-file from the [GitHub API](https://developer.github.com/v3/repos/contents/#get-contents)
 
 ### `file-to-check`
 
