@@ -88,7 +88,7 @@ it('testCheckVersionUpdateWithVersionIsUpdatedAndAdditionalFilesGivenButNotUpdat
     Index.checkVersionUpdate('1.0.0', '1.1.0', ['README.md']);
 
     // verify
-    expect(fs.readFileSync).toHaveBeenCalledWith('undefined/README.md');
+    expect(fs.readFileSync).toHaveBeenCalledWith('test/workspace/README.md');
     expect(core.setFailed).toHaveBeenCalledWith('You have to update the project version in "README.md"!');
 });
 
@@ -102,6 +102,6 @@ it('testCheckVersionUpdateWithVersionIsUpdatedAndAdditionalFilesGiven', async() 
     Index.checkVersionUpdate('1.0.0', '1.1.0', ['README.md']);
 
     // verify
-    expect(fs.readFileSync).toHaveBeenCalledWith('undefined/README.md');
+    expect(fs.readFileSync).toHaveBeenCalledWith('test/workspace/README.md');
     expect(core.setFailed).not.toHaveBeenCalledWith('You have to update the project version in "README.md"!');
 });
