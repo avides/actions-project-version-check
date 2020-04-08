@@ -1,4 +1,5 @@
 # actions-project-version-check
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=avides_actions-project-version-check&metric=alert_status)](https://sonarcloud.io/dashboard?id=avides_actions-project-version-check)
 
 This action checks if the project version has been updated in your pull request. The action will request the file content from file with name of `file-to-check` from the pull request target branch and parse the project version. After that the local project version will be checked against the targets one with [semver-diff](https://www.npmjs.com/package/semver-diff). If the result is `undefined`, the action fail.
 
