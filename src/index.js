@@ -17,6 +17,7 @@ function getProjectVersionFromMavenFile(fileContent) {
         projectVersion = String(result.project.version);
     });
 
+    console.log(projectVersion);
     return projectVersion;
 }
 
