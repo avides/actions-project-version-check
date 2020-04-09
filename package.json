@@ -32,10 +32,19 @@
   "devDependencies": {
     "@zeit/ncc": "^0.20.5",
     "eslint": "^6.3.0",
+    "husky": "^4.2.3",
     "jest": "^24.9.0",
-    "pre-commit": "^1.2.2"
+    "lint-staged": "^10.1.2"
   },
-  "pre-commit": [
-    "package"
-  ]
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "npm run package",
+      "git add"
+    ]
+  }
 }
