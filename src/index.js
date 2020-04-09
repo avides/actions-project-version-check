@@ -9,37 +9,31 @@ const semverDiff = require('semver-diff');
 const repositoryLocalWorkspace = process.env.GITHUB_WORKSPACE + '/';
 
 // helper functions
-function getProjectVersionFromMavenFile(fileContent)
-{
+function getProjectVersionFromMavenFile(fileContent) {
     var parser = new xml2js.Parser();
     var projectVersion;
 
-    parser.parseString(fileContent, function(err, result) {
+    parser.parseString(fileContent, function (err, result) {
         projectVersion = String(result.project.version);
     });
 
     return projectVersion;
 }
 
-function getProjectVersionFromPackageJsonFile(fileContent)
-{
+function getProjectVersionFromPackageJsonFile(fileContent) {
     return JSON.parse(fileContent).version;
 }
 
-function getProjectVersion(fileContent, fileType)
-{
-    if (fileType == 'xml')
-    {
+function getProjectVersion(fileContent, fileType) {
+    if (fileType == 'xml') {
         return getProjectVersionFromMavenFile(fileContent);
     }
 
-    if (fileType == 'json')
-    {
+    if (fileType == 'json') {
         return getProjectVersionFromPackageJsonFile(fileContent);
     }
 
-    if (fileType == 'txt')
-    {
+    if (fileType == 'txt') {
         return fileContent;
     }
 
@@ -47,25 +41,20 @@ function getProjectVersion(fileContent, fileType)
     return undefined;
 }
 
-function checkVersionUpdate(targetVersion, branchVersion, additionalFilesToCheck)
-{
+function checkVersionUpdate(targetVersion, branchVersion, additionalFilesToCheck) {
     var result = semverDiff(targetVersion, branchVersion);
 
-    if (!result)
-    {
+    if (!result) {
         console.log("targetVersion: " + targetVersion);
         console.log("branchVersion: " + branchVersion);
         console.log('semverDiff: ' + result);
         core.setFailed('You have to update the project version!');
     }
-    else if (additionalFilesToCheck != undefined)
-    {
-        additionalFilesToCheck.forEach(file => 
-        {
+    else if (additionalFilesToCheck != undefined) {
+        additionalFilesToCheck.forEach(file => {
             var fileContent = fs.readFileSync(repositoryLocalWorkspace + file.trim());
-            
-            if (!fileContent.includes(branchVersion) || fileContent.includes(targetVersion))
-            {
+
+            if (!fileContent.includes(branchVersion) || fileContent.includes(targetVersion)) {
                 core.setFailed('You have to update the project version in "' + file + '"!');
             }
         });
@@ -73,10 +62,8 @@ function checkVersionUpdate(targetVersion, branchVersion, additionalFilesToCheck
 }
 
 // main
-async function run() 
-{
-    try
-    {
+async function run() {
+    try {
         // setup objects
         var octokit = new github.GitHub(core.getInput('token'));
 
@@ -92,8 +79,7 @@ async function run()
         // get additional files with updated project version
         var additionalFilesToCheck = core.getInput('additional-files-to-check');
         additionalFilesToCheck = additionalFilesToCheck != '' ? additionalFilesToCheck : undefined;
-        if (additionalFilesToCheck != undefined)
-        {
+        if (additionalFilesToCheck != undefined) {
             additionalFilesToCheck = additionalFilesToCheck.split(',');
         }
 
@@ -102,8 +88,7 @@ async function run()
         var targetBranch = event && event.pull_request && event.pull_request.base ? event.pull_request.base.ref : 'master';
 
         // check version update
-        octokit.repos.getContents({owner: repositoryOwner, repo: repositoryName, path: fileToCheck, ref: targetBranch, headers: { 'Accept': 'application/vnd.github.v3.raw' }}).then(response =>
-        {
+        octokit.repos.getContents({ owner: repositoryOwner, repo: repositoryName, path: fileToCheck, ref: targetBranch, headers: { 'Accept': 'application/vnd.github.v3.raw' } }).then(response => {
             // read file contents
             var targetBranchFileContent = response.data;
             var updatedBranchFileContent = fs.readFileSync(repositoryLocalWorkspace + fileToCheck);
@@ -116,8 +101,7 @@ async function run()
             // export version
             core.setOutput('version', updatedProjectVersion);
         }).catch(error => console.log('Cannot resolve `' + fileToCheck + '` in target branch! No version check required. ErrMsg => ' + error));
-    } catch (error)
-    {
+    } catch (error) {
         core.setFailed(error.message);
     }
 }
@@ -126,7 +110,7 @@ async function run()
 run();
 
 // exports for unit testing
-module.exports = 
+module.exports =
 {
     getProjectVersion,
     getProjectVersionFromMavenFile,
