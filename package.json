@@ -42,7 +42,7 @@
     }
   },
   "lint-staged": {
-    "*.js": [
+    "*": [
       "npm run package",
       "git add"
     ]
