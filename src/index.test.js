@@ -50,6 +50,7 @@ test('testGetProjectVersionWithUnsupportedFile', async() =>
 {
     var result = Index.getProjectVersion('1.0.0', 'md');
     expect(result).toBe(undefined);
+    expect(core.setFailed).toHaveBeenCalledWith('md is not supported!');
 });
 
 it('testCheckVersionUpdateWithVersionsAreEqual', async() => 
@@ -94,7 +95,6 @@ it('testCheckVersionUpdateWithVersionIsUpdatedAndAdditionalFilesGivenButNotUpdat
 
 it('testCheckVersionUpdateWithVersionIsUpdatedAndAdditionalFilesGiven', async() => 
 {
-    console.log(process.env.GITHUB_WORKSPACE);
     // prepare
     fs.readFileSync.mockReturnValue('foo... version: 1.1.0 ...bar');
 
@@ -108,7 +108,6 @@ it('testCheckVersionUpdateWithVersionIsUpdatedAndAdditionalFilesGiven', async() 
 
 it('testCheckVersionUpdateWithVersionIsUpdatedAndAdditionalFilesGivenWithSpaceInString', async() => 
 {
-    console.log(process.env.GITHUB_WORKSPACE);
     // prepare
     fs.readFileSync.mockReturnValue('foo... version: 1.1.0 ...bar');
 
