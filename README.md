@@ -18,6 +18,10 @@ Currently supported are `pom.xml`, `package.json` and `version.txt`.
 
 Comma separated list of filenames (with path) that must contain the same version as "file-to-check" (examples: README.md, src/file-with-version.txt)
 
+### `only-return-version`
+
+Is used to disable the whole version check and only return the project version as output for usage in other actions
+
 ## Outputs
 
 ### `version`
@@ -36,7 +40,7 @@ If the version update is valid then the new version is available as output. Usag
 
 ## Example usage
 ```
-- uses: avides/actions-project-version-check@v1.0.0
+- uses: avides/actions-project-version-check@v1.0.1
 - with:
     token: ${{ secrets.GITHUB_TOKEN }}
     file-to-check: package.json

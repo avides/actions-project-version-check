@@ -87,19 +87,21 @@ async function run() {
         var targetBranch = event && event.pull_request && event.pull_request.base ? event.pull_request.base.ref : 'master';
 
         // check version update
-        octokit.repos.getContents({ owner: repositoryOwner, repo: repositoryName, path: fileToCheck, ref: targetBranch, headers: { 'Accept': 'application/vnd.github.v3.raw' } }).then(response => {
-            // read file contents
-            var targetBranchFileContent = response.data;
-            var updatedBranchFileContent = fs.readFileSync(repositoryLocalWorkspace + fileToCheck);
+        if (core.getInput('only-return-version') == 'false') {
+            octokit.repos.getContents({ owner: repositoryOwner, repo: repositoryName, path: fileToCheck, ref: targetBranch, headers: { 'Accept': 'application/vnd.github.v3.raw' } }).then(response => {
+                // read file contents
+                var targetBranchFileContent = response.data;
+                var updatedBranchFileContent = fs.readFileSync(repositoryLocalWorkspace + fileToCheck);
 
-            // version check
-            var targetProjectVersion = getProjectVersion(targetBranchFileContent, fileToCheck);
-            var updatedProjectVersion = getProjectVersion(updatedBranchFileContent, fileToCheck);
-            checkVersionUpdate(targetProjectVersion, updatedProjectVersion, additionalFilesToCheck);
+                // version check
+                var targetProjectVersion = getProjectVersion(targetBranchFileContent, fileToCheck);
+                var updatedProjectVersion = getProjectVersion(updatedBranchFileContent, fileToCheck);
+                checkVersionUpdate(targetProjectVersion, updatedProjectVersion, additionalFilesToCheck);
 
-            // export version
-            core.setOutput('version', updatedProjectVersion);
-        }).catch(error => console.log('Cannot resolve `' + fileToCheck + '` in target branch! No version check required. ErrMsg => ' + error));
+                // export version
+                core.setOutput('version', updatedProjectVersion);
+            }).catch(error => console.log('Cannot resolve `' + fileToCheck + '` in target branch! No version check required. ErrMsg => ' + error));
+        }
     } catch (error) {
         core.setFailed(error.message);
     }

@@ -10,6 +10,10 @@ inputs:
   additional-files-to-check:
     description: 'Comma separated list of filenames (with path) that must contain the same version as "file-to-check" (examples: README.md, src/file-with-version.txt)'
     required: false
+  only-return-version:
+    description: 'Is used to disable the whole version check and only return the project version as output for usage in other actions'
+    default: 'false'
+    required: false
 outputs:
   version:
     description: If the version update is valid then the new version is returned
