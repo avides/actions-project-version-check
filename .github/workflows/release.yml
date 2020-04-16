@@ -37,16 +37,12 @@ jobs:
           git config --global user.name $releaseName
 
           git tag -fa v$projectVersion -m 'Release'
+          git push origin v$projectVersion
 
           export majorProjectVersion=$(cut -d "." -f1 <<< $projectVersion)
           git tag -fa v$majorProjectVersion -m 'Update'
+          git push --force origin v$majorProjectVersion
 
           export minorProjectVersion=$(cut -d "." -f2 <<< $projectVersion)
           git tag -fa v$majorProjectVersion.$minorProjectVersion -m 'Update'
-
-      - name: push-release
-        uses: ad-m/github-push-action@v0.5.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          force: true
-          tags: true
+          git push --force origin v$majorProjectVersion.$minorProjectVersion
