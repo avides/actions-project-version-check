@@ -23,7 +23,7 @@ jobs:
 
       - name: verify-project-version (output from actions_project_version_check)
         run: |
-          [ -v ${{ steps.actions_project_version_check.outputs.version }} ] && exit 1
+          [ ! -v ${{ steps.actions_project_version_check.outputs.version }} ] && exit 1
 
       - name: get-project-version (integration-test)
         id: actions_project_version_check_get
@@ -36,7 +36,7 @@ jobs:
       - name: verify-project-version (output from actions_project_version_check_get)
         run: |
           export projectVersionSecond=${{ steps.actions_project_version_check_get.outputs.version }}
-          [ -v ${{ steps.actions_project_version_check_get.outputs.version }} ] && exit 1
+          [ ! -v ${{ steps.actions_project_version_check_get.outputs.version }} ] && exit 1
 
       - name: test
         run: |
