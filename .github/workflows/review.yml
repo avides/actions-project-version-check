@@ -14,13 +14,39 @@ jobs:
         uses: actions/checkout@v1
  
       - name: project-version-check (integration-test)
+        id: actions_project_version_check
         uses: ./
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           file-to-check: package.json
           additional-files-to-check: README.md
 
+      - name: verify-project-version (output from actions_project_version_check)
+        run: |
+          [[ -z ${{ steps.actions_project_version_check.outputs.version }} ]] && exit 1;
+
+      - name: get-project-version (integration-test)
+        id: actions_project_version_check_get
+        uses: ./
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          file-to-check: package.json
+          only-return-version: true
+
+      - name: verify-project-version (output from actions_project_version_check_get)
+        run: |
+          [[ -z ${{ steps.actions_project_version_check_get.outputs.version }} ]] && exit 1;
+
       - name: test
         run: |
           npm install
           npm test
+
+      - name: create-release
+        run: |
+          export projectVersion=${{ steps.actions_project_version_check.outputs.version }}
+          export majorProjectVersion=$(cut -d "." -f1 <<< $projectVersion)
+          git tag -fa v$majorProjectVersion -m 'Update'
+          export minorProjectVersion=$(cut -d "." -f2 <<< $projectVersion)
+          git tag -fa v$majorProjectVersion.$minorProjectVersion -m 'Update'
+          git push -follow-tags --force
