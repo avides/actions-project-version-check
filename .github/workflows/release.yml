@@ -18,31 +18,3 @@ jobs:
         run: |
           npm install
           npm test
-
-      - name: get-project-version-check ()
-        id: actions_project_version_check
-        uses: ./
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          file-to-check: package.json
-          additional-files-to-check: README.md
-
-      - name: create-release
-        env:
-          releaseEmail: "action@github.com"
-          releaseName: "GitHub Action"
-          projectVersion: ${{ steps.actions_project_version_check.outputs.version }}
-        run: |
-          git config --global user.email $releaseEmail
-          git config --global user.name $releaseName
-
-          git tag -fa v$projectVersion -m 'Release'
-          git push origin v$projectVersion
-
-          export majorProjectVersion=$(cut -d "." -f1 <<< $projectVersion)
-          git tag -fa v$majorProjectVersion -m 'Update'
-          git push --force origin v$majorProjectVersion
-
-          export minorProjectVersion=$(cut -d "." -f2 <<< $projectVersion)
-          git tag -fa v$majorProjectVersion.$minorProjectVersion -m 'Update'
-          git push --force origin v$majorProjectVersion.$minorProjectVersion
