@@ -24,20 +24,20 @@ function getProjectVersionFromPackageJsonFile(fileContent) {
     return JSON.parse(fileContent).version;
 }
 
-function getProjectVersion(fileContent, fileType) {
-    if (fileType == 'xml') {
+function getProjectVersion(fileContent, fileName) {
+    if (fileName == 'pom.xml') {
         return getProjectVersionFromMavenFile(fileContent);
     }
 
-    if (fileType == 'json') {
+    if (fileName == 'package.json') {
         return getProjectVersionFromPackageJsonFile(fileContent);
     }
 
-    if (fileType == 'txt') {
+    if (fileName == 'version.txt') {
         return fileContent;
     }
 
-    core.setFailed(fileType + ' is not supported!');
+    core.setFailed('"' + fileName + '" is not supported!');
     return undefined;
 }
 
@@ -74,7 +74,6 @@ async function run() {
 
         // get file with updated project version
         var fileToCheck = core.getInput('file-to-check');
-        var fileToCheckFileType = fileToCheck.split('.')[1];
 
         // get additional files with updated project version
         var additionalFilesToCheck = core.getInput('additional-files-to-check');
@@ -94,8 +93,8 @@ async function run() {
             var updatedBranchFileContent = fs.readFileSync(repositoryLocalWorkspace + fileToCheck);
 
             // version check
-            var targetProjectVersion = getProjectVersion(targetBranchFileContent, fileToCheckFileType);
-            var updatedProjectVersion = getProjectVersion(updatedBranchFileContent, fileToCheckFileType);
+            var targetProjectVersion = getProjectVersion(targetBranchFileContent, fileToCheck);
+            var updatedProjectVersion = getProjectVersion(updatedBranchFileContent, fileToCheck);
             checkVersionUpdate(targetProjectVersion, updatedProjectVersion, additionalFilesToCheck);
 
             // export version

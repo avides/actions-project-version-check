@@ -30,27 +30,27 @@ test('testGetProjectVersionFromPackageJsonFile', async() =>
 
 test('testGetProjectVersionWithMavenFile', async() => 
 {
-    var result = Index.getProjectVersion('<project><version>1.0.0</version></project>', 'xml');
+    var result = Index.getProjectVersion('<project><version>1.0.0</version></project>', 'pom.xml');
     expect(result).toBe('1.0.0');
 });
 
 test('testGetProjectVersionWithPackageJsonFile', async() => 
 {
-    var result = Index.getProjectVersion('{"version":"1.0.0"}', 'json');
+    var result = Index.getProjectVersion('{"version":"1.0.0"}', 'package.json');
     expect(result).toBe('1.0.0');
 });
 
 test('testGetProjectVersionWithTxtFile', async() => 
 {
-    var result = Index.getProjectVersion('1.0.0', 'txt');
+    var result = Index.getProjectVersion('1.0.0', 'version.txt');
     expect(result).toBe('1.0.0');
 });
 
 test('testGetProjectVersionWithUnsupportedFile', async() => 
 {
-    var result = Index.getProjectVersion('1.0.0', 'md');
+    var result = Index.getProjectVersion('1.0.0', 'README.md');
     expect(result).toBe(undefined);
-    expect(core.setFailed).toHaveBeenCalledWith('md is not supported!');
+    expect(core.setFailed).toHaveBeenCalledWith('"README.md" is not supported!');
 });
 
 it('testCheckVersionUpdateWithVersionsAreEqual', async() => 
