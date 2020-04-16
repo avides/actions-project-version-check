@@ -1,0 +1,19 @@
+name: nightly
+ 
+on:
+  schedule:
+    - cron: 0 0 * * *
+ 
+jobs:
+  nightly:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+ 
+    steps:
+      - name: checkout
+        uses: actions/checkout@v1
+ 
+      - name: test
+        run: |
+          npm install
+          npm test

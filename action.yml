@@ -1,0 +1,18 @@
+name: actions-project-version-check
+description: Checks if the project version has been updated
+inputs:
+  token:
+    description: 'The repository token is used to request the target branch `file-to-check`-file from the [GitHub API](https://developer.github.com/v3/repos/contents/#get-contents)'
+    required: true
+  file-to-check:
+    description: 'Filename (with path) that must contain the project version update (examples: pom.xml, package.json, version.txt)'
+    required: true
+  additional-files-to-check:
+    description: 'Comma separated list of filenames (with path) that must contain the same version as "file-to-check" (examples: README.md, src/file-with-version.txt)'
+    required: false
+outputs:
+  version:
+    description: If the version update is valid then the new version is returned
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

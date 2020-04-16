@@ -1,0 +1,42 @@
+{
+  "name": "actions-project-version-check",
+  "version": "1.0.0",
+  "description": "GitHub Action that checks if the project version has been updated",
+  "main": "dist/index.js",
+  "scripts": {
+    "lint": "eslint src/index.js",
+    "package": "ncc build src/index.js --minify",
+    "test": "eslint src/index.js && jest",
+    "packageAndAddToCommit": "ncc build src/index.js --minify && git add dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/avides/actions-project-version-check.git"
+  },
+  "keywords": [
+    "GitHub",
+    "Actions",
+    "JavaScript"
+  ],
+  "author": "Henrik Adamski",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/avides/actions-project-version-check/issues"
+  },
+  "homepage": "https://github.com/avides/actions-project-version-check#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.3",
+    "@actions/github": "^2.1.1",
+    "semver-diff": "^3.1.1",
+    "xml2js": "^0.4.23"
+  },
+  "devDependencies": {
+    "@zeit/ncc": "^0.20.5",
+    "eslint": "^6.3.0",
+    "jest": "^24.9.0",
+    "pre-commit": "^1.2.2"
+  },
+  "pre-commit": [
+    "packageAndAddToCommit"
+  ]
+}
