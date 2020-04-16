@@ -35,8 +35,13 @@ jobs:
           npm test
 
       - name: create-release
+        env:
+          releaseEmail: ${{ secrets.RELEASE_EMAIL }}
+          releaseName: ${{ secrets.RELEASE_NAME }}
+          projectVersion: ${{ steps.actions_project_version_check.outputs.version }}
         run: |
-          export projectVersion=${{ steps.actions_project_version_check.outputs.version }}
+          git config --global user.email $releaseEmail
+          git config --global user.name $releaseName
           git tag -fa v$projectVersion -m 'Release'
           export majorProjectVersion=$(cut -d "." -f1 <<< $projectVersion)
           git tag -fa v$majorProjectVersion -m 'Update'
