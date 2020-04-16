@@ -45,6 +45,7 @@ jobs:
       - name: create-release
         run: |
           export projectVersion=${{ steps.actions_project_version_check.outputs.version }}
+          git tag -fa v$projectVersion -m 'Release'
           export majorProjectVersion=$(cut -d "." -f1 <<< $projectVersion)
           git tag -fa v$majorProjectVersion -m 'Update'
           export minorProjectVersion=$(cut -d "." -f2 <<< $projectVersion)
