@@ -8,7 +8,7 @@ inputs:
     description: 'Filename (with path) that must contain the project version update (examples: pom.xml, package.json, version.txt)'
     required: true
   additional-files-to-check:
-    description: 'Comma seperated list of filenames (with path) that contains the same version as "file-to-check" (examples: README.md, src/file-with-version.txt)'
+    description: 'Comma separated list of filenames (with path) that must contain the same version as "file-to-check" (examples: README.md, src/file-with-version.txt)'
     required: false
 outputs:
   version:
