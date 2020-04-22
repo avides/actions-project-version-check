@@ -34,7 +34,7 @@ function getProjectVersion(fileContent, fileName) {
     }
 
     if (fileName == 'version.txt') {
-        return fileContent;
+        return new String(fileContent).trim();
     }
 
     core.setFailed('"' + fileName + '" is not supported!');

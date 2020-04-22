@@ -20,30 +20,50 @@ test('testGetProjectVersionFromMavenFile', async() =>
 {
     var result = Index.getProjectVersionFromMavenFile('<project><version>1.0.0</version></project>');
     expect(result).toBe('1.0.0');
+
+    var fileContent = fs.readFileSync('.jest/pom.xml');
+    var result2 = Index.getProjectVersionFromMavenFile(fileContent);
+    expect(result2).toBe('1.0.0');
 });
 
 test('testGetProjectVersionFromPackageJsonFile', async() => 
 {
     var result = Index.getProjectVersionFromPackageJsonFile('{"version":"1.0.0"}');
     expect(result).toBe('1.0.0');
+
+    var fileContent = fs.readFileSync('.jest/package.json');
+    var result2 = Index.getProjectVersionFromPackageJsonFile(fileContent);
+    expect(result2).toBe('1.0.0');
 });
 
 test('testGetProjectVersionWithMavenFile', async() => 
 {
     var result = Index.getProjectVersion('<project><version>1.0.0</version></project>', 'pom.xml');
     expect(result).toBe('1.0.0');
+
+    var fileContent = fs.readFileSync('.jest/pom.xml');
+    var result2 = Index.getProjectVersion(fileContent, 'pom.xml');
+    expect(result2).toBe('1.0.0');
 });
 
 test('testGetProjectVersionWithPackageJsonFile', async() => 
 {
     var result = Index.getProjectVersion('{"version":"1.0.0"}', 'package.json');
     expect(result).toBe('1.0.0');
+
+    var fileContent = fs.readFileSync('.jest/package.json');
+    var result2 = Index.getProjectVersion(fileContent, 'package.json');
+    expect(result2).toBe('1.0.0');
 });
 
 test('testGetProjectVersionWithTxtFile', async() => 
 {
     var result = Index.getProjectVersion('1.0.0', 'version.txt');
     expect(result).toBe('1.0.0');
+
+    var fileContent = fs.readFileSync('.jest/version.txt');
+    var result2 = Index.getProjectVersion(fileContent, 'version.txt');
+    expect(result2).toBe('1.0.0');
 });
 
 test('testGetProjectVersionWithUnsupportedFile', async() => 
