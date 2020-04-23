@@ -24,7 +24,7 @@ jobs:
       - name: project-version-output-check
         run: |
           if [ -z "${{ steps.actions_project_version_check.outputs.version }}" ] then;
-            exit 1;
+            exit 1
           fi
 
       - name: get-project-version (integration-test)
@@ -38,7 +38,7 @@ jobs:
       - name: get-project-version-output-check
         run: |
           if [ -z "${{ steps.get_project_version_check.outputs.version }}" ] then;
-            exit 1;
+            exit 1
           fi
 
       - name: test
