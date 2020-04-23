@@ -101,6 +101,7 @@ async function run() {
             }).catch(error => console.log('Cannot resolve `' + fileToCheck + '` in target branch! No version check required. ErrMsg => ' + error));
         }
 
+        // set output
         core.setOutput('version', updatedProjectVersion);
     } catch (error) {
         core.setFailed(error.message);
