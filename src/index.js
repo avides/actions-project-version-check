@@ -65,7 +65,7 @@ function checkVersionUpdate(targetVersion, branchVersion, additionalFilesToCheck
 async function run() {
     try {
         // setup objects
-        var octokit = new github.GitHub(core.getInput('token'));
+        var octokit = new github.getOctokit(core.getInput('token'));
 
         // get repository owner and name
         var repository = process.env.GITHUB_REPOSITORY.split('/');
