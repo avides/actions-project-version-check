@@ -1,5 +1,8 @@
-name: actions-project-version-check
+name: Project Version check (Maven, NodeJS...)
 description: Checks if the project version has been updated
+branding:
+  icon: "check-circle"
+  color: "green"
 inputs:
   token:
     description: 'The repository token is used to request the target branch `file-to-check`-file from the [GitHub API](https://developer.github.com/v3/repos/contents/#get-contents)'
