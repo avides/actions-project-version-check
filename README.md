@@ -40,7 +40,7 @@ If the version update is valid then the new version is available as output. Usag
 
 ## Example usage
 ```
-- uses: avides/actions-project-version-check@v1.1.0
+- uses: avides/actions-project-version-check@v1.2.0
 - with:
     token: ${{ secrets.GITHUB_TOKEN }}
     file-to-check: package.json
