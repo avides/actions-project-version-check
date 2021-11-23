@@ -16,6 +16,30 @@ afterEach(() =>
     jest.clearAllMocks();
 });
 
+test('testGetProjectVersion should recognize pom.xml as valid in path and get version', async() => 
+{
+    var result = Index.getProjectVersion('<project><version>1.0.0</version></project>', '/test/test/pom.xml');
+    expect(result).toBe('1.0.0');
+});
+
+test('testGetProjectVersion should recognize package.json as valid in path and get version', async() => 
+{
+    var result = Index.getProjectVersion('{"version":"1.0.0"}', '/test/test/package.json');
+    expect(result).toBe('1.0.0');
+});
+
+test('testGetProjectVersion should recognize version.txt as valid in path and get version', async() => 
+{
+    var result = Index.getProjectVersion('1.0.0', '/test/test/version.txt');
+    expect(result).toBe('1.0.0');
+});
+
+test('testGetProjectVersion should return undefined with invalid file', async() => 
+{
+    var result = Index.getProjectVersion('1.0.0', '/test/test/version.jar');
+    expect(result).toBe(undefined);
+});
+
 test('testGetProjectVersionFromMavenFile', async() => 
 {
     var result = Index.getProjectVersionFromMavenFile('<project><version>1.0.0</version></project>');
