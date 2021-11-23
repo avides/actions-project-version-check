@@ -25,15 +25,15 @@ function getProjectVersionFromPackageJsonFile(fileContent) {
 }
 
 function getProjectVersion(fileContent, fileName) {
-    if (fileName == 'pom.xml') {
+    if (fileName.endsWith('pom.xml')) {
         return getProjectVersionFromMavenFile(fileContent);
     }
 
-    if (fileName == 'package.json') {
+    if (fileName.endsWith('package.json')) {
         return getProjectVersionFromPackageJsonFile(fileContent);
     }
 
-    if (fileName == 'version.txt') {
+    if (fileName.endsWith('version.txt')) {
         return new String(fileContent).trim();
     }
 
