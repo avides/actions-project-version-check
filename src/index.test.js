@@ -18,25 +18,25 @@ afterEach(() =>
 
 test('testGetProjectVersion should recognize pom.xml as valid in path and get version', async() => 
 {
-    var result = Index.getProjectVersion('<project><version>1.0.0</version></project>', '/test/test/pom.xml');
+    var result = Index.getProjectVersion('<project><version>1.0.0</version></project>', 'pom.xml');
     expect(result).toBe('1.0.0');
 });
 
 test('testGetProjectVersion should recognize package.json as valid in path and get version', async() => 
 {
-    var result = Index.getProjectVersion('{"version":"1.0.0"}', '/test/test/package.json');
+    var result = Index.getProjectVersion('{"version":"1.0.0"}', 'package.json');
     expect(result).toBe('1.0.0');
 });
 
 test('testGetProjectVersion should recognize version.txt as valid in path and get version', async() => 
 {
-    var result = Index.getProjectVersion('1.0.0', '/test/test/version.txt');
+    var result = Index.getProjectVersion('1.0.0', 'version.txt');
     expect(result).toBe('1.0.0');
 });
 
 test('testGetProjectVersion should return undefined with invalid file', async() => 
 {
-    var result = Index.getProjectVersion('1.0.0', '/test/test/version.jar');
+    var result = Index.getProjectVersion('1.0.0', 'version.jar');
     expect(result).toBe(undefined);
 });
 
