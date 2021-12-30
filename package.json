@@ -1,6 +1,6 @@
 {
   "name": "actions-project-version-check",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "GitHub Action that checks if the project version has been updated",
   "main": "dist/index.js",
   "scripts": {
