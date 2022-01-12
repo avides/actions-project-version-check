@@ -3,6 +3,7 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const xml2js = require('xml2js');
 const fs = require('fs');
+const path = require('path');
 const semverDiff = require('semver-diff');
 
 // constants
@@ -25,15 +26,15 @@ function getProjectVersionFromPackageJsonFile(fileContent) {
 }
 
 function getProjectVersion(fileContent, fileName) {
-    if (fileName == 'pom.xml') {
+    if (fileName === 'pom.xml') {
         return getProjectVersionFromMavenFile(fileContent);
     }
 
-    if (fileName == 'package.json') {
+    if (fileName === 'package.json') {
         return getProjectVersionFromPackageJsonFile(fileContent);
     }
 
-    if (fileName == 'version.txt') {
+    if (fileName === 'version.txt') {
         return new String(fileContent).trim();
     }
 
@@ -88,14 +89,15 @@ async function run() {
 
         // get updated project version
         var updatedBranchFileContent = fs.readFileSync(repositoryLocalWorkspace + fileToCheck);
-        var updatedProjectVersion = getProjectVersion(updatedBranchFileContent, fileToCheck);
+        const fileName = path.basename(repositoryLocalWorkspace + fileToCheck);
+        var updatedProjectVersion = getProjectVersion(updatedBranchFileContent, fileName);
 
         // check version update
         if (core.getInput('only-return-version') == 'false') {
             octokit.repos.getContent({ owner: repositoryOwner, repo: repositoryName, path: fileToCheck, ref: targetBranch, headers: { 'Accept': 'application/vnd.github.v3.raw' } }).then(response => {
                 // get target project version
                 var targetBranchFileContent = response.data;
-                var targetProjectVersion = getProjectVersion(targetBranchFileContent, fileToCheck);
+                var targetProjectVersion = getProjectVersion(targetBranchFileContent, fileName);
 
                 checkVersionUpdate(targetProjectVersion, updatedProjectVersion, additionalFilesToCheck);
             }).catch(error => console.log('Cannot resolve `' + fileToCheck + '` in target branch! No version check required. ErrMsg => ' + error));
