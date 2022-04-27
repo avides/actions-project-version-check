@@ -94,7 +94,7 @@ async function run() {
 
         // check version update
         if (core.getInput('only-return-version') == 'false') {
-            octokit.repos.getContent({ owner: repositoryOwner, repo: repositoryName, path: fileToCheck, ref: targetBranch, headers: { 'Accept': 'application/vnd.github.v3.raw' } }).then(response => {
+            octokit.rest.repos.getContent({ owner: repositoryOwner, repo: repositoryName, path: fileToCheck, ref: targetBranch, headers: { 'Accept': 'application/vnd.github.v3.raw' } }).then(response => {
                 // get target project version
                 var targetBranchFileContent = response.data;
                 var targetProjectVersion = getProjectVersion(targetBranchFileContent, fileName);
