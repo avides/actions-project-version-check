@@ -2,7 +2,7 @@
   "name": "actions-project-version-check",
   "version": "2.0.0",
   "description": "GitHub Action that checks if the project version has been updated",
-  "exports": "./dist/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "lint": "eslint src/index.js",
     "package": "ncc build src/index.js --minify",
