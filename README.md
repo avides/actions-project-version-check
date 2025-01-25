@@ -27,7 +27,8 @@ Is used to disable the whole version check and only return the project version a
 ### `version`
 
 If the version update is valid then the new version is available as output. Usage:
-```
+
+``` yaml
 - uses: avides/actions-project-version-check@latest
   id: actions_project_version_check
   with:
@@ -39,8 +40,9 @@ If the version update is valid then the new version is available as output. Usag
 ```
 
 ## Example usage
-```
-- uses: avides/actions-project-version-check@v1.4.0
+
+``` yaml
+- uses: avides/actions-project-version-check@v2.0.0
 - with:
     token: ${{ secrets.GITHUB_TOKEN }}
     file-to-check: package.json
