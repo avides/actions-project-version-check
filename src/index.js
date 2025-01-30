@@ -1,17 +1,17 @@
 // imports
-const core = require('@actions/core');
-const github = require('@actions/github');
-const xml2js = require('xml2js');
-const fs = require('fs');
-const path = require('path');
-const semverDiff = require('semver-diff');
+import { setFailed, getInput, setOutput } from '@actions/core';
+import { getOctokit } from '@actions/github';
+import { Parser } from 'xml2js';
+import { readFileSync } from 'fs';
+import { basename } from 'path';
+import semverDiff from 'semver-diff';
 
 // constants
 const repositoryLocalWorkspace = process.env.GITHUB_WORKSPACE + '/';
 
 // helper functions
 function getProjectVersionFromMavenFile(fileContent) {
-    const parser = new xml2js.Parser();
+    const parser = new Parser();
     let projectVersion;
 
     parser.parseString(fileContent, function (err, result) {
@@ -38,7 +38,7 @@ function getProjectVersion(fileContent, fileName) {
         return new String(fileContent).trim();
     }
 
-    core.setFailed('"' + fileName + '" is not supported!');
+    setFailed('"' + fileName + '" is not supported!');
     return undefined;
 }
 
@@ -49,14 +49,14 @@ function checkVersionUpdate(targetVersion, branchVersion, additionalFilesToCheck
         console.log("targetVersion: " + targetVersion);
         console.log("branchVersion: " + branchVersion);
         console.log('semverDiff: ' + result);
-        core.setFailed('You have to update the project version!');
+        setFailed('You have to update the project version!');
     }
     else if (additionalFilesToCheck != undefined) {
         additionalFilesToCheck.forEach(file => {
-            const fileContent = fs.readFileSync(repositoryLocalWorkspace + file.trim());
+            const fileContent = readFileSync(repositoryLocalWorkspace + file.trim());
 
             if (!fileContent.includes(branchVersion) || fileContent.includes(targetVersion)) {
-                core.setFailed('You have to update the project version in "' + file + '"!');
+                setFailed('You have to update the project version in "' + file + '"!');
             }
         });
     }
@@ -66,7 +66,7 @@ function checkVersionUpdate(targetVersion, branchVersion, additionalFilesToCheck
 async function run() {
     try {
         // setup objects
-        const octokit = new github.getOctokit(core.getInput('token'));
+        const octokit = new getOctokit(getInput('token'));
 
         // get repository owner and name
         const repository = process.env.GITHUB_REPOSITORY.split('/');
@@ -74,26 +74,26 @@ async function run() {
         const repositoryName = repository[1];
 
         // get file with updated project version
-        const fileToCheck = core.getInput('file-to-check');
+        const fileToCheck = getInput('file-to-check');
 
         // get additional files with updated project version
-        let additionalFilesToCheck = core.getInput('additional-files-to-check');
+        let additionalFilesToCheck = getInput('additional-files-to-check');
         additionalFilesToCheck = additionalFilesToCheck != '' ? additionalFilesToCheck : undefined;
         if (additionalFilesToCheck != undefined) {
             additionalFilesToCheck = additionalFilesToCheck.split(',');
         }
 
         // get target branch
-        const event = JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH));
+        const event = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH));
         const targetBranch = event?.pull_request?.base ? event.pull_request.base.ref : 'master';
 
         // get updated project version
-        const updatedBranchFileContent = fs.readFileSync(repositoryLocalWorkspace + fileToCheck);
-        const fileName = path.basename(repositoryLocalWorkspace + fileToCheck);
+        const updatedBranchFileContent = readFileSync(repositoryLocalWorkspace + fileToCheck);
+        const fileName = basename(repositoryLocalWorkspace + fileToCheck);
         const updatedProjectVersion = getProjectVersion(updatedBranchFileContent, fileName);
 
         // check version update
-        if (core.getInput('only-return-version') == 'false') {
+        if (getInput('only-return-version') == 'false') {
             octokit.rest.repos.getContent({ owner: repositoryOwner, repo: repositoryName, path: fileToCheck, ref: targetBranch, headers: { 'Accept': 'application/vnd.github.v3.raw' } }).then(response => {
                 // get target project version
                 const targetBranchFileContent = response.data;
@@ -104,9 +104,9 @@ async function run() {
         }
 
         // set output
-        core.setOutput('version', updatedProjectVersion);
+        setOutput('version', updatedProjectVersion);
     } catch (error) {
-        core.setFailed(error.message);
+        setFailed(error.message);
     }
 }
 
@@ -114,7 +114,7 @@ async function run() {
 run();
 
 // exports for unit testing
-module.exports = {
+export default {
     getProjectVersion,
     getProjectVersionFromMavenFile,
     getProjectVersionFromPackageJsonFile,
