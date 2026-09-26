@@ -1,6 +1,6 @@
 {
   "name": "actions-project-version-check",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "GitHub Action that checks if the project version has been updated",
   "type": "module",
   "main": "dist/index.js",
@@ -25,17 +25,16 @@
   },
   "homepage": "https://github.com/avides/actions-project-version-check#readme",
   "dependencies": {
-    "@actions/core": "^1.11.1",
-    "@actions/github": "^6.0.0",
+    "@actions/core": "^3.0.1",
+    "@actions/github": "^9.1.1",
     "semver-diff": "^4.0.0",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.2.0",
-    "@eslint/js": "^9.19.0",
-    "@vercel/ncc": "^0.38.3",
-    "eslint": "^9.19.0",
-    "globals": "^15.14.0",
+    "@eslint/js": "^10.0.1",
+    "@vercel/ncc": "^0.45.0",
+    "eslint": "^10.11.0",
+    "globals": "^17.12.0",
     "husky": "^9.1.7"
   }
 }
