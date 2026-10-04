@@ -42,7 +42,7 @@ If the version update is valid then the new version is available as output. Usag
 ## Example usage
 
 ``` yaml
-- uses: avides/actions-project-version-check@v3.0.0
+- uses: avides/actions-project-version-check@v3.0.1
 - with:
     token: ${{ secrets.GITHUB_TOKEN }}
     file-to-check: package.json
