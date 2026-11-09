@@ -1,11 +1,12 @@
 {
   "name": "actions-project-version-check",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "GitHub Action that checks if the project version has been updated",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "lint": "eslint src/index.js",
+    "lint": "eslint src test",
+    "test": "node --test test/*.test.js",
     "package": "ncc build src/index.js --minify",
     "prepare": "husky"
   },
