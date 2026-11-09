@@ -5,20 +5,29 @@ import { Parser } from 'xml2js';
 import { readFileSync } from 'fs';
 import { basename } from 'path';
 import semverDiff from 'semver-diff';
+import { isVersionUpdated } from './version-check.js';
 
 // constants
 const repositoryLocalWorkspace = process.env.GITHUB_WORKSPACE + '/';
 
 // helper functions
-function getProjectVersionFromMavenFile(fileContent) {
+function getProjectElementFromMavenFile(fileContent, elementName) {
     const parser = new Parser();
-    let projectVersion;
+    let element;
 
     parser.parseString(fileContent, function (err, result) {
-        projectVersion = String(result.project.version);
+        element = String(result.project[elementName]);
     });
 
-    return projectVersion;
+    return element;
+}
+
+function getProjectVersionFromMavenFile(fileContent) {
+    return getProjectElementFromMavenFile(fileContent, 'version');
+}
+
+function getArtifactIdFromMavenFile(fileContent) {
+    return getProjectElementFromMavenFile(fileContent, 'artifactId');
 }
 
 function getProjectVersionFromPackageJsonFile(fileContent) {
@@ -42,21 +51,20 @@ function getProjectVersion(fileContent, fileName) {
     return undefined;
 }
 
-function checkVersionUpdate(targetVersion, branchVersion, additionalFilesToCheck) {
+function checkVersionUpdate(targetVersion, branchVersion, additionalFilesToCheck, artifactId) {
     const result = semverDiff(targetVersion, branchVersion);
 
     if (!result) {
-        console.log("targetVersion: " + targetVersion);
-        console.log("branchVersion: " + branchVersion);
-        console.log('semverDiff: ' + result);
-        setFailed('You have to update the project version!');
+        // not logged via console.log: the versions are read from the files of the pull request, a line break in them could inject a workflow command -
+        // setFailed escapes them
+        setFailed('You have to update the project version! ' + branchVersion + ' is not higher than ' + targetVersion + ' of the target branch.');
     }
     else if (additionalFilesToCheck != undefined) {
         additionalFilesToCheck.forEach(file => {
             const fileContent = readFileSync(repositoryLocalWorkspace + file.trim());
 
-            if (!fileContent.includes(branchVersion) || fileContent.includes(targetVersion)) {
-                setFailed('You have to update the project version in "' + file + '"!');
+            if (!isVersionUpdated(fileContent, targetVersion, branchVersion, artifactId)) {
+                setFailed('You have to update the project version in "' + file + '" to ' + branchVersion + '!');
             }
         });
     }
@@ -91,6 +99,8 @@ async function run() {
         const updatedBranchFileContent = readFileSync(repositoryLocalWorkspace + fileToCheck);
         const fileName = basename(repositoryLocalWorkspace + fileToCheck);
         const updatedProjectVersion = getProjectVersion(updatedBranchFileContent, fileName);
+        // the Maven blocks of this artifact state its version in the additional files, e.g. the dependency-snippet of the README
+        const artifactId = fileName === 'pom.xml' ? getArtifactIdFromMavenFile(updatedBranchFileContent) : undefined;
 
         // check version update
         if (getInput('only-return-version') == 'false') {
@@ -99,7 +109,7 @@ async function run() {
                 const targetBranchFileContent = response.data;
                 const targetProjectVersion = getProjectVersion(targetBranchFileContent, fileName);
 
-                checkVersionUpdate(targetProjectVersion, updatedProjectVersion, additionalFilesToCheck);
+                checkVersionUpdate(targetProjectVersion, updatedProjectVersion, additionalFilesToCheck, artifactId);
             }).catch(error => console.log('Cannot resolve `' + fileToCheck + '` in target branch! No version check required. ErrMsg => ' + error));
         }
 
@@ -117,6 +127,7 @@ run();
 export default {
     getProjectVersion,
     getProjectVersionFromMavenFile,
+    getArtifactIdFromMavenFile,
     getProjectVersionFromPackageJsonFile,
     checkVersionUpdate
 }
