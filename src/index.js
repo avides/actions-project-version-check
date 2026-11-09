@@ -55,10 +55,9 @@ function checkVersionUpdate(targetVersion, branchVersion, additionalFilesToCheck
     const result = semverDiff(targetVersion, branchVersion);
 
     if (!result) {
-        console.log("targetVersion: " + targetVersion);
-        console.log("branchVersion: " + branchVersion);
-        console.log('semverDiff: ' + result);
-        setFailed('You have to update the project version!');
+        // not logged via console.log: the versions are read from the files of the pull request, a line break in them could inject a workflow command -
+        // setFailed escapes them
+        setFailed('You have to update the project version! ' + branchVersion + ' is not higher than ' + targetVersion + ' of the target branch.');
     }
     else if (additionalFilesToCheck != undefined) {
         additionalFilesToCheck.forEach(file => {

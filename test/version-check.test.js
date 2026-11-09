@@ -64,6 +64,10 @@ describe('getMavenArtifactVersions', () => {
         assert.deepEqual(getMavenArtifactVersions(readme, 'vectis-core'), [undefined]);
     });
 
+    it('returns the version without the whitespace around it', () => {
+        assert.deepEqual(getMavenArtifactVersions(mavenReadme(' 3.14.0\n  '), 'vectis-core'), ['3.14.0']);
+    });
+
     it('returns undefined for a broken version-element', () => {
         assert.deepEqual(getMavenArtifactVersions(mavenReadme('2.7.0').replace('</version>', '/version>'), 'vectis-core'), [undefined]);
     });
